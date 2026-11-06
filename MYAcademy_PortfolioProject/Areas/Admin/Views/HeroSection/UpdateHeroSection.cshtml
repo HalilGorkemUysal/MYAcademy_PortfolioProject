@@ -1,0 +1,73 @@
+﻿@model HeroSection
+
+@{
+    ViewData["Title"] = "UpdateHeroSection";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Hero Alanı Güncelle</h4>
+    <hr />
+
+    <form method="post" action="/Admin/HeroSection/UpdateHeroSection">
+
+        <input type="hidden"
+               name="HeroSectionId"
+               value="@Model.HeroSectionId" />
+
+        <div class="mb-3">
+            <label>Karşılama Yazısı</label>
+            <input type="text"
+                   name="Greeting"
+                   value="@Model.Greeting"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Başlık</label>
+            <input type="text"
+                   name="Title"
+                   value="@Model.Title"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Açıklama</label>
+            <textarea name="Description"
+                      class="form-control"
+                      rows="4"
+                      required>@Model.Description</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Resim URL</label>
+            <input type="text"
+                   name="MainImageUrl"
+                   value="@Model.MainImageUrl"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Mevcut Resim</label>
+            <br />
+            <img src="@Model.MainImageUrl"
+                 width="150"
+                 style="border-radius:8px;" />
+        </div>
+
+        <button type="submit" class="btn btn-info">
+            Güncelle
+        </button>
+
+        <a href="/Admin/HeroSection/HeroSectionList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>

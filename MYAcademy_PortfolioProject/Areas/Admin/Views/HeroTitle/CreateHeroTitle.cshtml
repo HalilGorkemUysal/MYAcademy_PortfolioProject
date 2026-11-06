@@ -1,0 +1,53 @@
+﻿@model HeroTitle
+
+@{
+    ViewData["Title"] = "CreateHeroTitle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Yeni Hero Başlığı Ekle</h4>
+    <hr />
+
+    <form method="post" action="/Admin/HeroTitle/CreateHeroTitle">
+
+        <div class="mb-3">
+            <label>Başlık</label>
+            <input type="text"
+                   name="Title"
+                   class="form-control"
+                   placeholder="Başlık giriniz"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Sıralama</label>
+            <input type="number"
+                   name="Order"
+                   class="form-control"
+                   placeholder="Sıralama numarasını giriniz"
+                   min="1"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Durum</label>
+            <select name="IsActive" class="form-control">
+                <option value="true">Aktif</option>
+                <option value="false">Pasif</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Kaydet
+        </button>
+
+        <a href="/Admin/HeroTitle/HeroTitleList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>

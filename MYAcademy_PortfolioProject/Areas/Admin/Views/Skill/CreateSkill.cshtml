@@ -1,0 +1,53 @@
+﻿@model Skill
+
+@{
+    ViewData["Title"] = "CreateSkill";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Yeni Yetenek Ekle</h4>
+    <hr />
+
+    <form method="post" action="/Admin/Skill/CreateSkill">
+
+        <div class="mb-3">
+            <label>Yetenek Başlığı</label>
+            <input type="text"
+                   name="Title"
+                   class="form-control"
+                   placeholder="Yetenek başlığını giriniz"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Açıklama</label>
+            <textarea name="Description"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Yetenek açıklamasını giriniz"
+                      required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>İkon URL</label>
+            <input type="text"
+                   name="IconUrl"
+                   class="form-control"
+                   placeholder="İkon adresini giriniz"
+                   required />
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Kaydet
+        </button>
+
+        <a href="/Admin/Skill/SkillList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>

@@ -1,0 +1,59 @@
+﻿@model List<HeroSection>
+
+@{
+    ViewData["Title"] = "HeroSectionList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Karşılama Yazısı</th>
+                <th>Başlık</th>
+                <th>Açıklama</th>
+                <th>Resim</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.HeroSectionId</td>
+                    <td>@item.Greeting</td>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>
+                        <img src="@item.MainImageUrl"
+                             width="80"
+                             height="60"
+                             style="object-fit:cover;" />
+                    </td>
+                    <td>
+                        <a href="/Admin/HeroSection/DeleteHeroSection/@item.HeroSectionId"
+                           class="btn btn-danger">
+                            Sil
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/Admin/HeroSection/UpdateHeroSection/@item.HeroSectionId"
+                           class="btn btn-info">
+                            Güncelle
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/Admin/HeroSection/CreateHeroSection/"
+       class="btn btn-success">
+        Yeni Hero Alanı Ekle
+    </a>
+
+</div>

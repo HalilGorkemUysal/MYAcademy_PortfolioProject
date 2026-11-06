@@ -1,0 +1,62 @@
+﻿@model HeroSection
+
+@{
+    ViewData["Title"] = "CreateHeroSection";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Yeni Hero Alanı Ekle</h4>
+    <hr />
+
+    <form method="post" action="/Admin/HeroSection/CreateHeroSection">
+
+        <div class="mb-3">
+            <label>Karşılama Yazısı</label>
+            <input type="text"
+                   name="Greeting"
+                   class="form-control"
+                   placeholder="Karşılama yazısını giriniz"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Başlık</label>
+            <input type="text"
+                   name="Title"
+                   class="form-control"
+                   placeholder="Başlık giriniz"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Açıklama</label>
+            <textarea name="Description"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Açıklama giriniz"
+                      required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>Resim URL</label>
+            <input type="text"
+                   name="MainImageUrl"
+                   class="form-control"
+                   placeholder="Resim URL adresini giriniz"
+                   required />
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Kaydet
+        </button>
+
+        <a href="/Admin/HeroSection/HeroSectionList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>

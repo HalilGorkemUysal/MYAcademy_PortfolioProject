@@ -1,0 +1,56 @@
+﻿@model Skill
+
+@{
+    ViewData["Title"] = "UpdateSkill";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Yetenek Güncelle</h4>
+    <hr />
+
+    <form method="post" action="/Admin/Skill/UpdateSkill">
+
+        <input type="hidden"
+               name="SkillId"
+               value="@Model.SkillId" />
+
+        <div class="mb-3">
+            <label>Yetenek Başlığı</label>
+            <input type="text"
+                   name="Title"
+                   value="@Model.Title"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Açıklama</label>
+            <textarea name="Description"
+                      class="form-control"
+                      rows="4"
+                      required>@Model.Description</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label>İkon URL</label>
+            <input type="text"
+                   name="IconUrl"
+                   value="@Model.IconUrl"
+                   class="form-control"
+                   required />
+        </div>
+
+        <button type="submit" class="btn btn-info">
+            Güncelle
+        </button>
+
+        <a href="/Admin/Skill/SkillList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>

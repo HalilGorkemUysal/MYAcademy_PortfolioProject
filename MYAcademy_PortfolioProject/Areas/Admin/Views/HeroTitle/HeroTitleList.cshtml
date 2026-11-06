@@ -1,0 +1,61 @@
+﻿@model List<HeroTitle>
+
+@{
+    ViewData["Title"] = "HeroTitleList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Başlık</th>
+                <th>Sıralama</th>
+                <th>Durum</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.HeroTitleId</td>
+                    <td>@item.Title</td>
+                    <td>@item.Order</td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Pasif</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="/Admin/HeroTitle/DeleteHeroTitle/@item.HeroTitleId"
+                           class="btn btn-danger">
+                            Sil
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/Admin/HeroTitle/UpdateHeroTitle/@item.HeroTitleId"
+                           class="btn btn-info">
+                            Güncelle
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/Admin/HeroTitle/CreateHeroTitle/"
+       class="btn btn-success">
+        Yeni Başlık Ekle
+    </a>
+
+</div>
