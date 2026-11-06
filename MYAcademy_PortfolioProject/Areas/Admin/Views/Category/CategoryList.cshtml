@@ -1,0 +1,46 @@
+﻿@model List<Category>
+@{
+    ViewData["Title"] = "CategoryList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<main class="page-content-area">
+
+    <!-- Main Experience Table Container -->
+    <div class="data-table-card">
+
+        <!-- Experience Table -->
+        <div class="table-responsive-wrapper">
+            <table class="custom-admin-table" id="experienceTable">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ID</th>
+                        <th>Kategori Adı</th>
+                        <th>Sil</th>
+                        <th>Güncelle</th>
+                    </tr>
+                </thead>
+                <tbody id="experienceTableBody">
+                    @foreach (var item in Model)
+                    {
+                        <tr data-id="1" data-status="Aktif" data-order="1">
+                            <td class="col-id">@item.CategoryId</td>
+                            <td class="col-id">@item.CategoryName</td>
+                            <td>
+                                <a class="btn btn-danger" href="/Admin/Category/DeleteCategory/@item.CategoryId">Sil</a>
+                            </td>
+                            <td>
+                                <a class="btn btn-info" href="/Admin/Category/UpdateCategory/@item.CategoryId">Güncelle</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-footer-area">
+            <a class="btn btn-success" href="/Admin/Category/CreateCategory/">Yeni Kategori Ekle</a>
+        </div>
+    </div>
+
+</main>

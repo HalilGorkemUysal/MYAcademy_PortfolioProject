@@ -1,0 +1,49 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "CreateCategory";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<main class="page-content-area">
+
+    <div class="data-table-card">
+
+        <form method="post" action="/Admin/Category/CreateCategory">
+
+            <div class="table-responsive-wrapper">
+                <table class="custom-admin-table">
+                    <thead>
+                        <tr>
+                            <th>Yeni Kategori Ekle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label>Kategori Adı</label>
+                                <input type="text"
+                                       name="CategoryName"
+                                       class="form-control"
+                                       placeholder="Kategori adını giriniz"
+                                       required />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer-area">
+                <button type="submit" class="btn btn-success">
+                    Kategori Ekle
+                </button>
+                <a class="btn btn-secondary"
+                   href="/Admin/Category/CategoryList">
+                    Geri Dön
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</main>

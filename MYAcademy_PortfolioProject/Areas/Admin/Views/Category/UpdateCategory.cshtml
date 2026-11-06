@@ -1,0 +1,56 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "UpdateCategory";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<main class="page-content-area">
+
+    <div class="data-table-card">
+
+        <form method="post" action="/Admin/Category/UpdateCategory">
+
+            <input type="hidden"
+                   name="CategoryId"
+                   value="@Model.CategoryId" />
+
+            <div class="table-responsive-wrapper">
+                <table class="custom-admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th>Kategori Adı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-id">
+                                @Model.CategoryId
+                            </td>
+                            <td>
+                                <input type="text"
+                                       name="CategoryName"
+                                       value="@Model.CategoryName"
+                                       class="form-control"
+                                       required />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer-area">
+                <button type="submit" class="btn btn-info">
+                    Güncelle
+                </button>
+                <a class="btn btn-secondary"
+                   href="/Admin/Category/CategoryList">
+                    Geri Dön
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
