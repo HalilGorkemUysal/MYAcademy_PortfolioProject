@@ -1,0 +1,146 @@
+﻿@model Experience
+@{
+    ViewData["Title"] = "UpdateExperience";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <!-- Sayfa Başlığı -->
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-briefcase me-2"></i>
+                Deneyimi Güncelle
+            </h1>
+            <p class="page-subtitle">
+                İş deneyimlerinizi ve çalışma bilgilerinizi
+                buradan güncelleyebilirsiniz.
+            </p>
+        </div>
+
+        <div class="header-actions">
+            <a href="/Admin/Experience/ExperienceList/"
+               class="btn-pastel-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Deneyim Listesine Dön
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Kartı -->
+    <div class="data-table-card">
+
+        <div class="experience-form-header">
+            <div class="experience-form-icon">
+                <i class="bi bi-plus-circle"></i>
+            </div>
+            <div>
+                <h5>Deneyim Bilgileri</h5>
+                <p>
+                    Deneyiminize ait bilgiler
+                </p>
+            </div>
+        </div>
+
+        <form method="post">
+            <div class="experience-form-body">
+                <div class="experience-form-grid">
+
+                    <input type="hidden" asp-for="ExperienceId"/>
+                    <!-- Deneyim Başlığı -->
+                    <div class="form-group-custom">
+                        <label asp-for="Title"
+                               class="form-label-custom">
+                            Deneyim Başlığı
+                            <span class="required-star">*</span>
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control-custom"
+                               placeholder="Örn: Backend Developer" />
+                    </div>
+
+                    <!-- Şirket Adı -->
+                    <div class="form-group-custom">
+                        <label asp-for="CompanyName"
+                               class="form-label-custom">
+                            Kurum / Şirket
+                            <span class="required-star">*</span>
+                        </label>
+
+                        <input asp-for="CompanyName"
+                               class="form-control-custom"
+                               placeholder="Örn: ABC Teknoloji" />
+                    </div>
+
+                    <!-- Çalışma Alanı -->
+                    <div class="form-group-custom">
+                        <label asp-for="CategoryName"
+                               class="form-label-custom">
+                            Çalışma Alanı
+                        </label>
+
+                        <input asp-for="CategoryName"
+                               class="form-control-custom"
+                               placeholder="Örn: Yazılım Geliştirme" />
+                    </div>
+
+                    <!-- Durum -->
+                    <div class="form-group-custom">
+                        <label asp-for="IsActive"
+                               class="form-label-custom">
+                            Deneyim Durumu
+                        </label>
+
+                        <select asp-for="IsActive"
+                                class="form-control-custom">
+                            <option value="true">Devam Ediyor</option>
+                            <option value="false">Devam Etmiyor</option>
+                        </select>
+                    </div>
+
+                    <!-- Açıklama -->
+                    <div class="form-group-custom full-width">
+                        <label asp-for="Description"
+                               class="form-label-custom">
+                            Deneyim Tarihi Açıklaması
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control-custom"
+                                  rows="5"
+                                  placeholder="Mart-2020 / Devam Ediyor..."></textarea>
+                    </div>
+
+                </div>
+
+                <!-- Bilgilendirme -->
+                <div class="aspnet-tip-box">
+                    <i class="bi bi-info-circle"></i>
+                    <span>
+                        Güncellediğiniz deneyim, kaydetme işleminin
+                        ardından deneyim listesinde görüntülenecektir.
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- Alt Butonlar -->
+            <div class="experience-form-footer">
+                <a href="/Admin/Experience/ExperienceList/"
+                   class="btn-pastel-secondary">
+                    <i class="bi bi-x-circle"></i>
+                    Vazgeç
+                </a>
+
+                <button type="submit"
+                        class="btn-pastel-primary">
+                    <i class="bi bi-check2-circle"></i>
+                    Deneyimi Güncelle
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</main>

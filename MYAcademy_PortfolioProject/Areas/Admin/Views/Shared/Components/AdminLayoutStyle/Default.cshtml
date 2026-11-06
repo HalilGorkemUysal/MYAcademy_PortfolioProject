@@ -872,6 +872,103 @@
         font-weight: 600;
         color: var(--text-primary);
     }
+    
+    /* Create Experience Form */
+
+    .experience-form-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 24px 28px;
+        background-color: #FFFFFF;
+        border-bottom: 1px solid var(--border-soft);
+    }
+
+    .experience-form-icon {
+        width: 46px;
+        height: 46px;
+        background-color: var(--accent-pastel-green);
+        color: #487355;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+
+    .experience-form-header h5 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 5px;
+    }
+
+    .experience-form-header p {
+        font-size: 0.825rem;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .experience-form-body {
+        padding: 30px 28px;
+    }
+
+    .experience-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .form-group-custom {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        min-width: 0;
+    }
+
+        .form-group-custom.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group-custom .form-control-custom {
+            min-height: 44px;
+        }
+
+        .form-group-custom textarea.form-control-custom {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+    .experience-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 20px 28px;
+        background-color: #FCFBF8;
+        border-top: 1px solid var(--border-soft);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .experience-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .experience-form-body {
+            padding: 20px;
+        }
+
+        .experience-form-header {
+            padding: 20px;
+        }
+
+        .experience-form-footer {
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+    }
+
 
     /* Actions buttons inside Table */
     .row-actions-group {
@@ -1071,6 +1168,30 @@
         display: flex;
         align-items: center;
         gap: 10px;
+    }
+
+    .work-type-badge-blue {
+        background-color: #EBF2F7;
+        color: #557996;
+        border-color: #D5E5F0;
+    }
+
+    .work-type-badge-purple {
+        background-color: #F3EEF6;
+        color: #7B628A;
+        border-color: #E6D9ED;
+    }
+
+    .work-type-badge-green {
+        background-color: #EEF4EF;
+        color: #487355;
+        border-color: #D7E8DA;
+    }
+
+    .work-type-badge-orange {
+        background-color: #FCF7EE;
+        color: #B88E4E;
+        border-color: #F0E1C8;
     }
 
     /* Modal Backdrop simulation for full fidelity */
