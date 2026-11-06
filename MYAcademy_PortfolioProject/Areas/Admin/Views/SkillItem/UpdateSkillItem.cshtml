@@ -1,0 +1,50 @@
+﻿@model SkillItem
+
+@{
+    ViewData["Title"] = "UpdateSkillItem";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Yetenek Detayı Güncelle</h4>
+    <hr />
+
+    <form method="post" action="/Admin/SkillItem/UpdateSkillItem">
+
+        <input type="hidden"
+               name="SkillItemId"
+               value="@Model.SkillItemId" />
+
+        <div class="mb-3">
+            <label>Yetenek Detayı</label>
+            <input type="text"
+                   name="SkillItemTitle"
+                   value="@Model.SkillItemTitle"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Bağlı Olduğu Yetenek</label>
+
+            <select asp-for="SkillId"
+                    asp-items="ViewBag.v1"
+                    class="form-control"
+                    required>
+                <option value="">Yetenek Seçiniz</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-info">
+            Güncelle
+        </button>
+
+        <a href="/Admin/SkillItem/SkillItemList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>

@@ -1,0 +1,46 @@
+﻿@model SkillItem
+
+@{
+    ViewData["Title"] = "CreateSkillItem";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Yeni Yetenek Detayı Ekle</h4>
+    <hr />
+
+    <form method="post" action="/Admin/SkillItem/CreateSkillItem">
+
+        <div class="mb-3">
+            <label>Yetenek Detayı</label>
+            <input type="text"
+                   name="SkillItemTitle"
+                   class="form-control"
+                   placeholder="Yetenek detayını giriniz"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label>Bağlı Olduğu Yetenek</label>
+
+            <select asp-for="SkillId"
+                    asp-items="ViewBag.v1"
+                    class="form-control"
+                    required>
+                <option value="">Yetenek Seçiniz</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Kaydet
+        </button>
+
+        <a href="/Admin/SkillItem/SkillItemList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>
