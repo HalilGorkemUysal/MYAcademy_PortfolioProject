@@ -13,6 +13,8 @@
                 <th>#</th>
                 <th>Proje Adı</th>
                 <th>Kategori</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
             </tr>
         </thead>
         <tbody>
@@ -22,10 +24,14 @@
                     <td>@item.ProjectId</td>
                     <td>@item.ProjectTitle</td>
                     <td>@item.Category.CategoryName</td>
+                    <td><a class="btn btn-danger" href="/Admin/Project/DeleteProject/@item.ProjectId/">Sil</a></td>
+                    <td><a class="btn btn-info" href="/Admin/Project/UpdateProject/@item.ProjectId/">Güncelle</a></td>
                 </tr>
             }
 
         </tbody>
+        
     </table>
+    <a class="btn btn-success" href="/Admin/Project/CreateProject/">Ekle</a>
 
 </div>
