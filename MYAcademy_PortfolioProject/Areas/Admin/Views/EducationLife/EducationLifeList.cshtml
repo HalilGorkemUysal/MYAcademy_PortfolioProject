@@ -1,0 +1,87 @@
+﻿@model List<EducationLife>
+
+@{
+    ViewData["Title"] = "EducationLifeList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Eğitim Hayatım</h4>
+    <hr />
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Header</th>
+                    <th>Başlık</th>
+                    <th>Açıklama</th>
+                    <th>Etiket</th>
+                    <th>Sil</th>
+                    <th>Güncelle</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.EducationLifeId</td>
+
+                        <td>@item.Header</td>
+
+                        <td>@item.Title</td>
+
+                        <td>@item.Description</td>
+
+                        <td>
+                            <span class="badge bg-secondary">
+                                @item.Tag
+                            </span>
+                        </td>
+
+                        <td>
+                            <form asp-area="Admin"
+                                  asp-controller="EducationLife"
+                                  asp-action="DeleteEducationLife"
+                                  asp-route-id="@item.EducationLifeId"
+                                  method="post"
+                                  onsubmit="return confirm('Bu eğitim kaydını silmek istediğinize emin misiniz?');">
+
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit" class="btn btn-danger">
+                                    Sil
+                                </button>
+                            </form>
+                        </td>
+
+                        <td>
+                            <a href="/Admin/EducationLife/UpdateEducationLife/@item.EducationLifeId"
+                               class="btn btn-info">
+                                Güncelle
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            Henüz eğitim kaydı bulunmuyor.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/Admin/EducationLife/CreateEducationLife"
+       class="btn btn-success">
+        Yeni Eğitim Ekle
+    </a>
+</div>

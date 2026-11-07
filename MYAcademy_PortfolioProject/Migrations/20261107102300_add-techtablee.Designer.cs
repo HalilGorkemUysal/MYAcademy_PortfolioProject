@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MYAcademy_PortfolioProject.Migrations
 {
     [DbContext(typeof(PortfolioContext))]
-    [Migration("20261105124849_mig3")]
-    partial class mig3
+    [Migration("20261107102300_add-techtablee")]
+    partial class addtechtablee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -205,9 +205,23 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GithubUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ProjectTitle")
                         .IsRequired()
@@ -267,6 +281,28 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.ToTable("SkillItems");
                 });
 
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Tech", b =>
+                {
+                    b.Property<int>("TechId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TechId"));
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TechName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TechId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Teches");
+                });
+
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Project", b =>
                 {
                     b.HasOne("MYAcademy_PortfolioProject.Entities.Category", "Category")
@@ -289,9 +325,25 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.Navigation("Skill");
                 });
 
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Tech", b =>
+                {
+                    b.HasOne("MYAcademy_PortfolioProject.Entities.Project", "Project")
+                        .WithMany("Teches")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Category", b =>
                 {
                     b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Project", b =>
+                {
+                    b.Navigation("Teches");
                 });
 
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Skill", b =>

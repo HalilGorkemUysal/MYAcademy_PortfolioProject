@@ -1,0 +1,104 @@
+﻿@model List<About>
+
+@{
+    ViewData["Title"] = "AboutList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Hakkımda Listesi</h4>
+    <hr />
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Görsel</th>
+                    <th>Başlık</th>
+                    <th>Açıklama</th>
+                    <th>Deneyim</th>
+                    <th>Eğitim İçeriği</th>
+                    <th>Öğrenci</th>
+                    <th>Sil</th>
+                    <th>Güncelle</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.AboutId</td>
+
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl"
+                                     alt="Profil Görseli"
+                                     width="80"
+                                     height="60"
+                                     style="object-fit:cover;"
+                                     class="rounded" />
+                            }
+                        </td>
+
+                        <td>@item.Title</td>
+
+                        <td>
+                            <span title="@item.Description">
+                                @(item.Description.Length > 100
+                                    ? item.Description.Substring(0, 100) + "..."
+                                    : item.Description)
+                            </span>
+                        </td>
+
+                        <td>@item.ExperienceCount</td>
+                        <td>@item.EducationContentCount</td>
+                        <td>@item.StudentCount</td>
+
+                        <td>
+                            <form asp-area="Admin"
+                                  asp-controller="About"
+                                  asp-action="DeleteAbout"
+                                  asp-route-id="@item.AboutId"
+                                  method="post"
+                                  onsubmit="return confirm('Bu hakkımda kaydını silmek istediğinize emin misiniz?');">
+
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit" class="btn btn-danger">
+                                    Sil
+                                </button>
+                            </form>
+                        </td>
+
+                        <td>
+                            <a href="/Admin/About/UpdateAbout/@item.AboutId"
+                               class="btn btn-info">
+                                Güncelle
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="9"
+                            class="text-center text-muted py-4">
+                            Henüz hakkımda kaydı bulunmuyor.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/Admin/About/CreateAbout"
+       class="btn btn-success">
+        Yeni Hakkımda Ekle
+    </a>
+</div>

@@ -15,7 +15,13 @@ namespace MYAcademy_PortfolioProject.ViewComponents.DefaultViewComponents
 
         public IViewComponentResult Invoke()
         {
-            var values = _context.Projects.Include(x => x.Category).ToList();
+            var values = _context.Projects
+                .Include(x => x.Category)
+                .Include(x => x.Teches)
+                .Where(x => x.IsActive == true)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToList();
+
             return View(values);
         }
     }

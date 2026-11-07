@@ -1,4 +1,5 @@
 ﻿@model List<Message>
+
 @{
     ViewData["Title"] = "MessageList";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
@@ -6,33 +7,535 @@
 
 <div class="container">
     <br />
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Gönderen</th>
-                <th>Konu</th>
-                <th>Tarih</th>
-                <th>Mesajı Aç</th>
-                <th>Mesajı Düzenle</th>
-                <th>Mesajı Sil</th>
-            </tr>
-        </thead>
 
-        <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.MessageId</td>
-                <td>@item.SenderName</td>
-                <td>@item.Subject</td>
-                <td>@item.SendDate.ToString("dd MMM yyyy")</td>
-                <td><a href="/Admin/Message/MessageDetail/@item.MessageId" class="btn btn-info">Mesajı Aç</a></td>
-                <td><a href="/Admin/Message/UpdateMessage/@item.MessageId" class="btn btn-success">Mesajı Düzenle</a></td>
-                <td><a href="/Admin/Message/DeleteMessage/@item.MessageId" class="btn btn-danger">Mesajı Sil</a></td>
-            </tr>
-        }
-        </tbody>
+    <h4>Gelen Mesajlar</h4>
+    <p class="text-muted">
+        Gelen mesajları görüntüleyebilir ve yönetebilirsiniz.
+    </p>
+    <hr />
 
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>Mesaj Listesi</h5>
+
+        <span class="badge bg-secondary">
+            Toplam <span id="totalMessageCount">@ViewBag.TotalCount</span> Mesaj
+        </span>
+    </div>
+
+    <!-- Arama -->
+    <form method="get"
+          action="/Admin/Message/MessageList"
+          class="row g-2 mb-3">
+
+        <div class="col-md-5">
+            <input type="text"
+                   name="search"
+                   value="@ViewBag.Search"
+                   class="form-control"
+                   placeholder="Gönderen veya konuya göre ara..." />
+        </div>
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-search"></i> Ara
+            </button>
+        </div>
+
+        <div class="col-auto">
+            <a href="/Admin/Message/MessageList"
+               class="btn btn-secondary">
+                Temizle
+            </a>
+        </div>
+    </form>
+
+    <a href="/Admin/Message/CreateMessage"
+       class="btn btn-success mb-3">
+        <i class="bi bi-plus-circle"></i>
+        Yeni Mesaj Ekle
+    </a>
+
+    <!-- Mesaj Tablosu -->
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Gönderen</th>
+                    <th>Konu</th>
+                    <th>Gönderim Tarihi</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+
+            <tbody id="messageTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr id="message-row-@item.MessageId"
+                        class="@(!item.IsRead ? "table-light fw-bold" : "")">
+
+                        <td>#@item.MessageId</td>
+
+                        <td>
+                            @item.SenderName
+                            <br />
+                            <small class="text-muted fw-normal">
+                                @item.SenderEmail
+                            </small>
+                        </td>
+
+                        <td>@item.Subject</td>
+
+                        <td>
+                            @item.SendDate.ToString("dd.MM.yyyy HH:mm")
+                        </td>
+
+                        <td>
+                            <span id="message-status-@item.MessageId"
+                                  class="badge @(item.IsRead ? "bg-success" : "bg-warning text-dark")">
+                                @(item.IsRead ? "Okundu" : "Okunmadı")
+                            </span>
+                        </td>
+
+                        <td>
+                            <!-- Detay -->
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary view-message"
+                                    data-id="@item.MessageId"
+                                    title="Mesajı Görüntüle">
+                                <i class="bi bi-eye"></i>
+                            </button>
+
+                            <!-- Durum Değiştir -->
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-warning toggle-read"
+                                    data-id="@item.MessageId"
+                                    title="Okundu / Okunmadı">
+                                <i class="bi bi-envelope"></i>
+                            </button>
+
+                            <!-- Güncelleme Sayfası -->
+                            <a href="/Admin/Message/UpdateMessage/@item.MessageId"
+                               class="btn btn-sm btn-outline-info"
+                               title="Mesaj Durumunu Güncelle">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <!-- Sil -->
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger delete-message"
+                                    data-id="@item.MessageId"
+                                    title="Mesajı Sil">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr id="emptyMessageRow">
+                        <td colspan="6"
+                            class="text-center text-muted py-4">
+                            Gösterilecek mesaj bulunamadı.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-3">
+        <span class="badge bg-warning text-dark">
+            <span id="unreadMessageCount">@ViewBag.UnreadCount</span>
+            Okunmamış Mesaj
+        </span>
+    </div>
 </div>
+
+<!-- Anti-forgery Token -->
+<form id="messageTokenForm" class="d-none">
+    @Html.AntiForgeryToken()
+</form>
+
+<!-- Mesaj Detay Modal -->
+<div class="modal fade"
+     id="messageDetailModal"
+     tabindex="-1"
+     aria-labelledby="messageDetailModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageDetailModalLabel">
+                    Mesaj Detayı
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Kapat"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div id="messageLoading"
+                     class="text-center py-4 d-none">
+                    <div class="spinner-border text-success"></div>
+                    <p class="mt-2">Mesaj yükleniyor...</p>
+                </div>
+
+                <div id="messageDetailError"
+                     class="alert alert-danger d-none"></div>
+
+                <div id="messageDetailContent" class="d-none">
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Gönderen</label>
+                        <p id="modalSenderName"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">E-posta</label>
+                        <p id="modalSenderEmail"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Konu</label>
+                        <p id="modalSubject"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Gönderim Tarihi</label>
+                        <p id="modalSendDate"></p>
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Mesaj İçeriği</label>
+                        <p id="modalMessageDetail"
+                           style="white-space:pre-wrap;overflow-wrap:anywhere;"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Silme Onay Modal -->
+<div class="modal fade"
+     id="deleteMessageModal"
+     tabindex="-1"
+     aria-labelledby="deleteMessageModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteMessageModalLabel">
+                    Mesajı Sil
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Kapat"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    Bu mesajı kalıcı olarak silmek istediğinize
+                    emin misiniz?
+                </p>
+                <p class="text-danger small mb-0">
+                    Bu işlem geri alınamaz.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Vazgeç
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        id="confirmDeleteMessage">
+                    Evet, Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+      const token = document.querySelector(
+        '#messageTokenForm input[name="__RequestVerificationToken"]'
+        );
+
+        const detailModalElement =
+        document.getElementById("messageDetailModal");
+
+    const deleteModalElement =
+            document.getElementById("deleteMessageModal");
+
+       const detailModal =
+            bootstrap.Modal.getOrCreateInstance(detailModalElement);
+
+         const deleteModal =
+            bootstrap.Modal.getOrCreateInstance(deleteModalElement);
+
+        const content = document.getElementById("messageDetailContent");
+      const loading = document.getElementById("messageLoading");
+           const errorBox = document.getElementById("messageDetailError");
+
+        const unreadCount = document.getElementById("unreadMessageCount");
+        const totalCount = document.getElementById("totalMessageCount");
+
+        // Ortak POST fonksiyonu
+       async function postMessage(url, id) {
+
+        if (!token) {
+                throw new Error("Güvenlik token'ı bulunamadı.");
+            }
+
+               const formData = new FormData();
+
+          formData.append("id", id);
+            formData.append("__RequestVerificationToken", token.value);
+
+         const response = await fetch(url, {
+                  method: "POST",
+                headers: {
+                "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+              throw new Error("İşlem başarısız.");
+            }
+
+            return await response.json();
+        }
+
+    // Satır durumunu güncelle
+             function updateMessageRow(id, isRead) {
+
+              const badge = document.getElementById(
+             `message-status-${id}`
+            );
+
+                const row = document.getElementById(
+            `message-row-${id}`
+            );
+
+               if (badge) {
+                badge.textContent = isRead ? "Okundu" : "Okunmadı";
+
+                badge.className = isRead
+                 ? "badge bg-success"
+                : "badge bg-warning text-dark";
+            }
+
+            if (row) {
+                row.classList.toggle("table-light", !isRead);
+              row.classList.toggle("fw-bold", !isRead);
+            }
+        }
+
+            // MESAJ DETAYI
+        let detailRequestId = 0;
+
+                document.querySelectorAll(".view-message").forEach(button => {
+
+            button.addEventListener("click", async function () {
+
+                const id = this.dataset.id;
+             const requestId = ++detailRequestId;
+
+               detailModal.show();
+
+            loading.classList.remove("d-none");
+              content.classList.add("d-none");
+                    errorBox.classList.add("d-none");
+
+                try {
+                const response = await fetch(
+                    `/Admin/Message/GetMessageDetail/${id}`
+                    );
+
+                    if (!response.ok) {
+                    throw new Error("Mesaj getirilemedi.");
+                }
+
+                const message = await response.json();
+
+                if (requestId !== detailRequestId) return;
+
+                document.getElementById("modalSenderName").textContent =
+                        message.senderName;
+
+                document.getElementById("modalSenderEmail").textContent =
+                    message.senderEmail;
+
+                    document.getElementById("modalSubject").textContent =
+                    message.subject;
+
+                document.getElementById("modalSendDate").textContent =
+                        message.sendDate;
+
+                    document.getElementById("modalMessageDetail").textContent =
+                    message.messageDetail;
+
+                content.classList.remove("d-none");
+
+                  if (!message.isRead) {
+
+                        const result = await postMessage(
+                        "/Admin/Message/MarkAsRead", id
+                        );
+
+                    if (result.success) {
+                        updateMessageRow(id, true);
+
+                        unreadCount.textContent =
+                                result.unreadCount;
+                    }
+                    }
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    if (requestId !== detailRequestId) return;
+
+                    errorBox.textContent = content.classList.contains("d-none")
+                        ? "Mesaj detayları yüklenemedi."
+                        : "Mesaj açıldı ancak okundu durumu güncellenemedi.";
+
+                    errorBox.classList.remove("d-none");
+
+                } finally {
+                    if (requestId === detailRequestId) {
+                        loading.classList.add("d-none");
+                    }
+                }
+            });
+        });
+
+        detailModalElement.addEventListener("hide.bs.modal", function () {
+            detailRequestId++;
+        });
+
+        // OKUNDU / OKUNMADI
+        document.querySelectorAll(".toggle-read").forEach(button => {
+
+            button.addEventListener("click", async function () {
+
+                const id = this.dataset.id;
+
+                this.disabled = true;
+
+                try {
+                    const result = await postMessage(
+                        "/Admin/Message/UpdateMessage", id
+                    );
+
+                    if (result.success) {
+                        updateMessageRow(id, result.isRead);
+
+                        unreadCount.textContent =
+                            result.unreadCount;
+                    }
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Mesaj durumu güncellenemedi.");
+                } finally {
+                    this.disabled = false;
+                }
+            });
+        });
+
+        // SİLME
+        let selectedMessageId = null;
+
+        document.querySelectorAll(".delete-message").forEach(button => {
+
+            button.addEventListener("click", function () {
+
+                selectedMessageId = this.dataset.id;
+
+                deleteModal.show();
+            });
+        });
+
+        const confirmDelete =
+            document.getElementById("confirmDeleteMessage");
+
+        confirmDelete.addEventListener("click", async function () {
+
+            if (!selectedMessageId) return;
+
+            confirmDelete.disabled = true;
+
+            try {
+                const result = await postMessage(
+                    "/Admin/Message/DeleteMessage",
+                    selectedMessageId
+                );
+
+                if (result.success) {
+
+                    const row = document.getElementById(
+                        `message-row-${selectedMessageId}`
+                    );
+
+                    if (row) row.remove();
+
+                    unreadCount.textContent = result.unreadCount;
+                    totalCount.textContent = result.totalCount;
+
+                    deleteModal.hide();
+                    selectedMessageId = null;
+
+                    if (!document.querySelector("#messageTableBody tr")) {
+                        const emptyRow = document.createElement("tr");
+                        emptyRow.innerHTML =
+                            '<td colspan="6" class="text-center text-muted py-4">' +
+                            'Gösterilecek mesaj bulunamadı.</td>';
+
+                        document.getElementById("messageTableBody")
+                            .appendChild(emptyRow);
+                    }
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Mesaj silinemedi.");
+            } finally {
+                confirmDelete.disabled = false;
+            }
+        });
+
+        deleteModalElement.addEventListener("hidden.bs.modal", function () {
+            selectedMessageId = null;
+        });
+
+    });
+</script>

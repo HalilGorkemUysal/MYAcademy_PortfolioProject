@@ -1,57 +1,133 @@
 ﻿@model List<Project>
 
+@{
+    var categories = Model
+        .Where(x => x.Category != null)
+        .GroupBy(x => x.CategoryId)
+        .Select(x => new
+        {
+            Id = x.Key,
+            Name = x.First().Category.CategoryName
+        })
+        .ToList();
+}
+
 <section id="projects">
     <div class="container">
+
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3 reveal-on-scroll">
             <div>
                 <div class="eyebrow-badge">
                     <i class="bi bi-folder-check"></i> SEÇİLMİŞ ÇALIŞMALAR
                 </div>
+
                 <h2 class="section-title mb-1">
                     Fikirden Ürüne Dönüşen Projeler
                 </h2>
+
                 <p class="section-description mb-0">
-                    Öğrenme, üretme ve problem çözme süreçlerimin birer yansıması olan projelerimden bazıları.
+                    Öğrenme, üretme ve problem çözme süreçlerimin
+                    birer yansıması olan projelerimden bazıları.
                 </p>
             </div>
 
             <!-- Filter Buttons -->
             <div class="d-flex flex-wrap gap-2" id="projectFilters">
-                <button class="filter-btn active" data-filter="all">Tümü</button>
-                <button class="filter-btn" data-filter="web">Web Uygulamaları</button>
-                <button class="filter-btn" data-filter="mobile">Mobil</button>
-                <button class="filter-btn" data-filter="microservices">Mikroservisler</button>
+
+                <button type="button"
+                        class="filter-btn active"
+                        data-filter="all">
+                    Tümü
+                </button>
+
+                @foreach (var category in categories)
+                {
+                    <button type="button"
+                            class="filter-btn"
+                            data-filter="@category.Id">
+                        @category.Name
+                    </button>
+                }
+
             </div>
         </div>
 
         <!-- Project Grid -->
         <div class="row g-4" id="projectGrid">
-            
+
             @foreach (var item in Model)
             {
-                <div class="col-lg-6 project-item reveal-on-scroll" data-category="@item.Category.CategoryName">
+                <div class="col-lg-6 project-item reveal-on-scroll"
+                     data-category="@item.CategoryId">
+
                     <div class="project-card">
+
                         <div class="project-thumb-wrap">
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1gZJs_U2YiOQIR5mnZfZQhk69l0J1t4KX1skTA1nf6ScbSR2jKax_uA0cjYpML1P329_5ob3neM5V6FA8UG-h5TVzdc-lG9TtWsrgwuUNRZYKyLPchpomRHp4KxTdXS-Q9aE698Qj3JKm_sujki7qvlEwyF6uVSEWbd99t86o8fF3p2kVXJ8-p4lsR-p0GFzkNNc0KRVhgQNx1bTY63Cc3VQiPHywioukY4cwSNcLnrBpzDGhlk23" alt="Yapay Zeka Destekli Seyahat Asistanı" class="project-thumb-img">
-                            <span class="project-category-tag">Yapay Zeka & Web</span>
+
+                            <img src="@item.ImageUrl"
+                                 alt="@item.ProjectTitle"
+                                 class="project-thumb-img">
+
+                            <span class="project-category-tag">
+                                @(item.Category?.CategoryName ?? "Diğer")
+                            </span>
+
                         </div>
+
                         <div class="project-body">
-                            <h3 class="h4 fw-bold mb-2">@item.ProjectTitle</h3>
+
+                            <h3 class="h4 fw-bold mb-2">
+                                @item.ProjectTitle
+                            </h3>
+
                             <p class="text-muted small mb-4 flex-grow-1">
-                                 @item.Description
+                                @item.Description
                             </p>
+
+                            <!-- Technologies -->
                             <div class="mb-4">
-                                <span class="tech-badge">ASP.NET Core</span>
-                                <span class="tech-badge">Web API</span>
-                                <span class="tech-badge">OpenAI</span>
-                                <span class="tech-badge">SQL Server</span>
+
+                                @foreach (var tech in item.Teches.OrderBy(x => x.TechId))
+                                {
+                                    <span class="tech-badge">
+                                        @tech.TechName
+                                    </span>
+                                }
+
                             </div>
+
+                            <!-- Project Links -->
                             <div class="d-flex align-items-center justify-content-between pt-3 border-top">
-                                <a href="#contact" class="btn-sage btn-sm">
-                                    <span>Projeyi İncele</span>
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </a>
-                                <span class="text-muted small"><i class="bi bi-git me-1"></i>Açık Kaynak</span>
+
+                                @if (!string.IsNullOrWhiteSpace(item.GithubUrl))
+                                {
+                                    <a href="@item.GithubUrl"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn-sage btn-sm">
+
+                                        <span>Projeyi İncele</span>
+                                        <i class="bi bi-arrow-up-right"></i>
+
+                                    </a>
+
+                                    <a href="@item.GithubUrl"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="text-muted small text-decoration-none">
+
+                                        <i class="bi bi-git me-1"></i>
+                                        Açık Kaynak
+
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">
+                                        GitHub bağlantısı eklenmemiş
+                                    </span>
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -60,12 +136,72 @@
 
         </div>
 
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <p class="text-muted">
+                    Henüz yayınlanmış bir proje bulunmuyor.
+                </p>
+            </div>
+        }
 
         <div class="text-center mt-5">
-            <a href="#contact" class="btn-secondary-custom px-4 py-3">
+            <a href="#projectGrid"
+               class="btn-secondary-custom px-4 py-3">
+
                 <span>Tüm Projelerimi Gör</span>
                 <i class="bi bi-arrow-right"></i>
+
             </a>
         </div>
+
     </div>
 </section>
+
+        
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const filterButtons = document.querySelectorAll(
+            "#projectFilters .filter-btn"
+        );
+
+        const projectItems = document.querySelectorAll(
+            "#projectGrid .project-item"
+        );
+
+        filterButtons.forEach(button => {
+
+            button.addEventListener("click", function() {
+
+                filterButtons.forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+                this.classList.add("active");
+
+                const selectedFilter = this.dataset.filter;
+
+                projectItems.forEach(project => {
+
+                    const projectCategory = project.dataset.category;
+
+                    if (selectedFilter === "all" ||
+                        selectedFilter === projectCategory) {
+
+                        project.style.display = "";
+
+                    } else {
+
+                        project.style.display = "none";
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    });
+</script>

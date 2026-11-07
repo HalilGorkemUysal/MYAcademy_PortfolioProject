@@ -1,0 +1,75 @@
+﻿@model EducationLife
+
+@{
+    ViewData["Title"] = "UpdateEducationLife";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Eğitim Bilgilerini Güncelle</h4>
+    <hr />
+
+    <form asp-area="Admin"
+          asp-controller="EducationLife"
+          asp-action="UpdateEducationLife"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="EducationLifeId" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label>Header</label>
+            <input type="text"
+                   asp-for="Header"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="Header"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Eğitim Başlığı</label>
+            <input type="text"
+                   asp-for="Title"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="Title"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Eğitim Açıklaması</label>
+            <textarea asp-for="Description"
+                      class="form-control"
+                      rows="4"
+                      required></textarea>
+            <span asp-validation-for="Description"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Etiket</label>
+            <input type="text"
+                   asp-for="Tag"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="Tag"
+                  class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Eğitimi Güncelle
+        </button>
+
+        <a href="/Admin/EducationLife/EducationLifeList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+    </form>
+</div>

@@ -11,7 +11,11 @@
     <h4>Yeni Hero Alanı Ekle</h4>
     <hr />
 
-    <form method="post" action="/Admin/HeroSection/CreateHeroSection">
+    <form method="post"
+          action="/Admin/HeroSection/CreateHeroSection"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
 
         <div class="mb-3">
             <label>Karşılama Yazısı</label>
@@ -41,11 +45,11 @@
         </div>
 
         <div class="mb-3">
-            <label>Resim URL</label>
-            <input type="text"
-                   name="MainImageUrl"
+            <label>Hero Görseli</label>
+            <input type="file"
+                   name="imageFile"
                    class="form-control"
-                   placeholder="Resim URL adresini giriniz"
+                   accept="image/*"
                    required />
         </div>
 

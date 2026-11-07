@@ -11,17 +11,18 @@
     <h4>Hero Alanı Güncelle</h4>
     <hr />
 
-    <form method="post" action="/Admin/HeroSection/UpdateHeroSection">
+    <form method="post"
+          action="/Admin/HeroSection/UpdateHeroSection"
+          enctype="multipart/form-data">
 
-        <input type="hidden"
-               name="HeroSectionId"
-               value="@Model.HeroSectionId" />
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="HeroSectionId" />
 
         <div class="mb-3">
             <label>Karşılama Yazısı</label>
             <input type="text"
-                   name="Greeting"
-                   value="@Model.Greeting"
+                   asp-for="Greeting"
                    class="form-control"
                    required />
         </div>
@@ -29,38 +30,44 @@
         <div class="mb-3">
             <label>Başlık</label>
             <input type="text"
-                   name="Title"
-                   value="@Model.Title"
+                   asp-for="Title"
                    class="form-control"
                    required />
         </div>
 
         <div class="mb-3">
             <label>Açıklama</label>
-            <textarea name="Description"
+            <textarea asp-for="Description"
                       class="form-control"
                       rows="4"
-                      required>@Model.Description</textarea>
+                      required></textarea>
         </div>
 
         <div class="mb-3">
-            <label>Resim URL</label>
-            <input type="text"
-                   name="MainImageUrl"
-                   value="@Model.MainImageUrl"
-                   class="form-control"
-                   required />
-        </div>
-
-        <div class="mb-3">
-            <label>Mevcut Resim</label>
+            <label>Mevcut Görsel</label>
             <br />
-            <img src="@Model.MainImageUrl"
-                 width="150"
-                 style="border-radius:8px;" />
+
+            @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+            {
+                <img src="@Model.MainImageUrl"
+                     width="150"
+                     class="img-thumbnail mb-2" />
+            }
         </div>
 
-        <button type="submit" class="btn btn-info">
+        <div class="mb-3">
+            <label>Yeni Hero Görseli</label>
+            <input type="file"
+                   name="imageFile"
+                   class="form-control"
+                   accept="image/*" />
+
+            <small class="text-muted">
+                Yeni görsel seçmezseniz mevcut görsel korunur.
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-success">
             Güncelle
         </button>
 

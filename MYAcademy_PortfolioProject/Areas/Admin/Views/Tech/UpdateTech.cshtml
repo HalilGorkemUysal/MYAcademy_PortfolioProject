@@ -1,0 +1,58 @@
+﻿@model Tech
+
+@{
+    ViewData["Title"] = "UpdateTech";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+    <h4>Teknoloji Güncelle</h4>
+    <hr />
+
+    <form method="post">
+
+        <input type="hidden" asp-for="TechId" />
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Error
+            </div>
+        }
+
+        <div class="mb-3">
+            <label>Teknoloji Adı</label>
+            <input type="text"
+                   class="form-control"
+                   asp-for="TechName" />
+        </div>
+
+        <div class="mb-3">
+            <label>Bağlı Olduğu Proje</label>
+
+            <select asp-for="ProjectId" class="form-control">
+
+                <option value="">Proje Seçiniz</option>
+
+                @foreach (var item in ViewBag.v1)
+                {
+                    <option value="@item.Value">
+                        @item.Text
+                    </option>
+                }
+
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Teknolojiyi Güncelle
+        </button>
+
+        <a href="/Admin/Tech/TechList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+
+    </form>
+</div>

@@ -1,4 +1,5 @@
 ﻿@model Project
+
 @{
     ViewData["Title"] = "UpdateProject";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
@@ -9,38 +10,69 @@
     <h4>Proje Güncelle</h4>
     <hr />
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
+
+        <input type="hidden" asp-for="ProjectId" />
 
         <div class="mb-3">
-            <input type="hidden" asp-for="ProjectId"/>
-
             <label>Proje Adı</label>
             <input type="text" class="form-control" asp-for="ProjectTitle" />
         </div>
+
         <div class="mb-3">
             <label>Proje Açıklaması</label>
             <textarea asp-for="Description" class="form-control" rows="4"></textarea>
         </div>
+
         <div class="mb-3">
             <label>Proje Kategorisi</label>
             <select asp-for="CategoryId" class="form-control">
-
                 <option value="">Kategori Seçiniz</option>
                 @foreach (var item in ViewBag.v1)
                 {
                     <option value="@item.Value">@item.Text</option>
                 }
-
             </select>
-
-            <button type="submit" class="btn btn-success">
-                Projeyi Güncelle
-            </button>
-
-            <a href="/Admin/Project/ProjectList"
-               class="btn btn-secondary">
-                Geri Dön
-            </a>
         </div>
+
+        <div class="mb-3">
+            <label>Proje Aktif-Pasif</label>
+            <select asp-for="IsActive" class="form-control">
+                <option value="true">Aktif Yap</option>
+                <option value="false">Pasif Yap</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Proje Görseli</label>
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="mb-2">
+                    <img src="@Model.ImageUrl"
+                         width="150" class="img-thumbnail" />
+                </div>
+            }
+
+            <input type="file" name="imageFile"
+                   class="form-control" accept="image/*" />
+            <small class="text-muted">
+                Yeni görsel seçmezseniz mevcut görsel korunur.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label>Github URL</label>
+            <input type="text" class="form-control" asp-for="GithubUrl" />
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Projeyi Güncelle
+        </button>
+
+        <a href="/Admin/Project/ProjectList" class="btn btn-secondary">
+            Geri Dön
+        </a>
+
     </form>
 </div>

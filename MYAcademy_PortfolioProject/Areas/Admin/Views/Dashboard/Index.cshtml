@@ -1,23 +1,24 @@
-﻿@{
+﻿@model MYAcademy_PortfolioProject.ViewModels.DashboardViewModel
+
+@{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 
-    // Dinamik veriler (controller'dan)
-    int total = ViewBag.v1;
-    int unread = ViewBag.v2;
-    int read = ViewBag.v3;
+    int total = Model.TotalMessageCount;
+    int unread = Model.UnreadMessageCount;
+    int read = Model.ReadMessageCount;
+
     int rate = total == 0 ? 0 : read * 100 / total;
 
-    // Statik (UI) veriler
-    var labels = new[] { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" };
-    var counts = new[] { 4, 7, 3, 9, 6, 2, 5 };
-    int max = counts.Max();
-    var last = new[] {
-        (Name: "Ayşe Yılmaz",  Subject: "Proje teklifi",      Text: "Merhaba, web siteniz için bir teklif almak istiyorum.", Date: "03 Kas, 14:20", IsRead: false),
-        (Name: "Mehmet Kaya",  Subject: "İş birliği",         Text: "Portfolyonuzu inceledim, birlikte çalışmak isteriz.",   Date: "02 Kas, 10:05", IsRead: false),
-        (Name: "Zeynep Demir", Subject: "Teşekkürler",        Text: "Geçen haftaki görüşme için teşekkür ederim.",            Date: "01 Kas, 18:42", IsRead: true),
-        (Name: "Can Öztürk",   Subject: "Staj başvurusu",     Text: "Ekibinizde staj imkânı olup olmadığını öğrenmek isterim.", Date: "31 Eki, 09:15", IsRead: true)
-    };
+    var labels = Model.WeeklyMessages
+        .Select(x => x.Date.ToString("ddd", new System.Globalization.CultureInfo("tr-TR")))
+        .ToArray();
+
+    var counts = Model.WeeklyMessages
+        .Select(x => x.MessageCount)
+        .ToArray();
+
+    int max = counts.Length == 0 ? 1 : Math.Max(counts.Max(), 1);
 }
 
 <style>
@@ -216,18 +217,40 @@
 
     <!-- Dinamik istatistik kartları -->
     <div class="row g-4 mb-4">
+        
         @{
-            var stats = new[] {
-                (Val: total,  Lbl: "Toplam Mesaj", Icon: "bi-envelope",             Cls: "c-green"),
-                (Val: unread, Lbl: "Okunmamış",    Icon: "bi-envelope-exclamation", Cls: "c-rose"),
-                (Val: read,   Lbl: "Okunmuş",      Icon: "bi-envelope-check",       Cls: "c-blue")
-            };
+            var stats = new[]
+            {
+        (Val: Model.TotalProjectCount.ToString(), Lbl: "Toplam Proje",
+         Icon: "bi-folder", Cls: "c-green"),
+
+        (Val: Model.ActiveProjectCount.ToString(), Lbl: "Aktif Proje",
+         Icon: "bi-folder-check", Cls: "c-blue"),
+
+        (Val: Model.SkillCount.ToString(), Lbl: "Yetenekler",
+         Icon: "bi-stars", Cls: "c-green"),
+
+        (Val: Model.ExperienceCount.ToString(), Lbl: "Deneyimler",
+         Icon: "bi-briefcase", Cls: "c-blue"),
+
+        (Val: Model.EducationCount?.ToString() ?? "—", Lbl: "Eğitim",
+         Icon: "bi-mortarboard", Cls: "c-green"),
+
+        (Val: Model.TotalMessageCount.ToString(), Lbl: "Toplam Mesaj",
+         Icon: "bi-envelope", Cls: "c-blue"),
+
+        (Val: Model.UnreadMessageCount.ToString(), Lbl: "Okunmamış Mesaj",
+         Icon: "bi-envelope-exclamation", Cls: "c-rose")
+    };
         }
+
         @foreach (var s in stats)
         {
-            <div class="col-md-4">
+            <div class="col-md-6 col-xl-3">
                 <div class="db-card stat">
-                    <div class="stat-icon @s.Cls"><i class="bi @s.Icon"></i></div>
+                    <div class="stat-icon @s.Cls">
+                        <i class="bi @s.Icon"></i>
+                    </div>
                     <div>
                         <div class="stat-val">@s.Val</div>
                         <div class="stat-lbl">@s.Lbl</div>
@@ -235,6 +258,7 @@
                 </div>
             </div>
         }
+
     </div>
 
     <div class="row g-4 mb-4">
@@ -243,7 +267,7 @@
             <div class="db-card">
                 <div class="db-title">Son 7 Gün <small>Günlük gelen mesajlar</small></div>
                 <div class="bars">
-                    @for (int i = 0; i < 7; i++)
+                    @for (int i = 0; i < counts.Length; i++)
                     {
                         <div class="bar">
                             <b>@counts[i]</b>
@@ -269,30 +293,196 @@
     </div>
 
     <!-- Son mesajlar (statik) -->
+    <!-- Son 5 Mesaj (Dinamik) -->
     <div class="db-card">
         <div class="db-title">
-            Son Mesajlar
-            <a asp-area="Admin" asp-controller="Message" asp-action="MessageList" class="small text-decoration-none" style="color:var(--g)">Tümünü gör →</a>
+            Son 5 Mesaj
+
+            <a asp-area="Admin"
+               asp-controller="Message"
+               asp-action="MessageList"
+               class="small text-decoration-none"
+               style="color:var(--g)">
+                Tümünü gör →
+            </a>
         </div>
 
-        @foreach (var m in last)
+        @foreach (var m in Model.LastMessages)
         {
             <div class="msg-row">
-                <div class="avatar">@m.Name.Substring(0, 1)</div>
-                <div class="msg-body">
-                    <strong>@m.Name</strong> · <span class="small">@m.Subject</span>
-                    <p>@m.Text</p>
+
+                <div class="avatar">
+                    @(string.IsNullOrWhiteSpace(m.SenderName)
+                        ? "?"
+                        : m.SenderName.Substring(0, 1).ToUpper())
                 </div>
-                <small class="text-muted d-none d-md-block">@m.Date</small>
+
+                <div class="msg-body">
+                    <strong>@m.SenderName</strong>
+                    ·
+                    <span class="small">@m.Subject</span>
+
+                    <p>@m.MessageDetail</p>
+                </div>
+
+                <small class="text-muted d-none d-md-block">
+                    @m.SendDate.ToString("dd.MM.yyyy HH:mm")
+                </small>
+
                 @if (m.IsRead)
                 {
-                    <span class="badge-soft c-blue">Okundu</span>
+                    <span class="badge-soft c-blue">
+                        Okundu
+                    </span>
                 }
                 else
                 {
-                    <span class="badge-soft c-rose">Yeni</span>
+                    <span class="badge-soft c-rose">
+                        Okunmadı
+                    </span>
                 }
+
             </div>
         }
+
+        @if (!Model.LastMessages.Any())
+        {
+            <p class="text-muted text-center py-3">
+                Henüz mesaj bulunmuyor.
+            </p>
+        }
     </div>
+
+    
+    <div class="db-card mt-4">
+        <div class="db-title">
+            Kategori Özeti
+        </div>
+
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>Kategori</th>
+                    <th>Proje Sayısı</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.CategorySummary)
+                {
+                    <tr>
+                        <td>@item.CategoryName</td>
+                        <td>
+                            <span class="badge bg-success">
+                                @item.ProjectCount
+                            </span>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.CategorySummary.Any())
+                {
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">
+                            Henüz kategori bulunmuyor.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    
+    <div class="db-card mt-4">
+        <div class="db-title">
+            Son Eklenen 3 Proje
+
+            <a asp-area="Admin"
+               asp-controller="Project"
+               asp-action="ProjectList"
+               class="small text-decoration-none"
+               style="color:var(--g)">
+                Tümünü gör →
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th>Proje Adı</th>
+                        <th>Kategori</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var project in Model.LastProjects)
+                    {
+                        <tr>
+                            <td>@project.ProjectTitle</td>
+
+                            <td>@project.Category?.CategoryName</td>
+
+                            <td>
+                                @if (project.IsActive)
+                                {
+                                    <span class="badge bg-success">
+                                        Aktif
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        Pasif
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!Model.LastProjects.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">
+                                Henüz proje bulunmuyor.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+    <div class="db-card mt-4">
+        <div class="db-title">
+            Hızlı Erişim
+        </div>
+
+        <div class="d-flex flex-wrap gap-3">
+
+            <a asp-area="Admin"
+               asp-controller="Project"
+               asp-action="CreateProject"
+               class="btn btn-success">
+
+                <i class="bi bi-plus-circle me-1"></i>
+                Yeni Proje Ekle
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Message"
+               asp-action="MessageList"
+               class="btn btn-outline-success">
+
+                <i class="bi bi-envelope me-1"></i>
+                Mesajları Gör
+            </a>
+
+        </div>
+    </div>
+
+
 </div>

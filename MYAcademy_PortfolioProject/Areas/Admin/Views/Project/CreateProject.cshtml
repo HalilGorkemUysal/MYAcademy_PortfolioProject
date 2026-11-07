@@ -1,4 +1,5 @@
 ﻿@model Project
+
 @{
     ViewData["Title"] = "CreateProject";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
@@ -9,36 +10,55 @@
     <h4>Yeni Proje Ekle</h4>
     <hr />
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label>Proje Adı</label>
-            <input type="text" class="form-control" asp-for="ProjectTitle"/>
+            <input type="text" class="form-control" asp-for="ProjectTitle" />
         </div>
+
         <div class="mb-3">
             <label>Proje Açıklaması</label>
             <textarea asp-for="Description" class="form-control" rows="4"></textarea>
         </div>
+
         <div class="mb-3">
             <label>Proje Kategorisi</label>
             <select asp-for="CategoryId" class="form-control">
-
                 <option value="">Kategori Seçiniz</option>
                 @foreach (var item in ViewBag.v1)
-                        {
-                            <option value="@item.Value">@item.Text</option>
-                        }
-
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
             </select>
-
-            <button type="submit" class="btn btn-success">
-                Projeyi Kaydet
-            </button>
-
-            <a href="/Admin/Project/ProjectList"
-               class="btn btn-secondary">
-                Geri Dön
-            </a>
         </div>
+
+        <div class="mb-3">
+            <label>Proje Aktif-Pasif</label>
+            <select asp-for="IsActive" class="form-control">
+                <option value="true">Aktif Yap</option>
+                <option value="false">Pasif Yap</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Proje Görseli</label>
+            <input type="file" name="imageFile"
+                   class="form-control" accept="image/*" />
+        </div>
+
+        <div class="mb-3">
+            <label>Github URL</label>
+            <input type="text" class="form-control" asp-for="GithubUrl" />
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Projeyi Kaydet
+        </button>
+
+        <a href="/Admin/Project/ProjectList" class="btn btn-secondary">
+            Geri Dön
+        </a>
+
     </form>
 </div>

@@ -22,6 +22,49 @@ namespace MYAcademy_PortfolioProject.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.About", b =>
+                {
+                    b.Property<int>("AboutId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AboutId"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("EducationContentCount")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ExperienceCount")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("StudentCount")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("AboutId");
+
+                    b.ToTable("Abouts");
+                });
+
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -70,6 +113,39 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.HasKey("ContactId");
 
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.EducationLife", b =>
+                {
+                    b.Property<int>("EducationLifeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EducationLifeId"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Header")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("EducationLifeId");
+
+                    b.ToTable("EducationLives");
                 });
 
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Experience", b =>
@@ -202,9 +278,23 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GithubUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ProjectTitle")
                         .IsRequired()
@@ -264,6 +354,28 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.ToTable("SkillItems");
                 });
 
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Tech", b =>
+                {
+                    b.Property<int>("TechId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TechId"));
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TechName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TechId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Teches");
+                });
+
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Project", b =>
                 {
                     b.HasOne("MYAcademy_PortfolioProject.Entities.Category", "Category")
@@ -286,9 +398,25 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.Navigation("Skill");
                 });
 
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Tech", b =>
+                {
+                    b.HasOne("MYAcademy_PortfolioProject.Entities.Project", "Project")
+                        .WithMany("Teches")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Category", b =>
                 {
                     b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Project", b =>
+                {
+                    b.Navigation("Teches");
                 });
 
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Skill", b =>

@@ -22,6 +22,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.UseStaticFiles();
 
 //app.UseEndpoints(endpoints =>
 //{

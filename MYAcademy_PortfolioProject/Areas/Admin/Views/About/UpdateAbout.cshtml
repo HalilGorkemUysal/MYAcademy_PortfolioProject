@@ -1,0 +1,114 @@
+﻿@model About
+
+@{
+    ViewData["Title"] = "UpdateAbout";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+
+    <h4>Hakkımda Güncelle</h4>
+    <hr />
+
+    <form asp-area="Admin"
+          asp-controller="About"
+          asp-action="UpdateAbout"
+          method="post"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="AboutId" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label>Başlık</label>
+            <input type="text"
+                   asp-for="Title"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="Title"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Açıklama</label>
+            <textarea asp-for="Description"
+                      class="form-control"
+                      rows="6"
+                      required></textarea>
+            <span asp-validation-for="Description"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Yıl Deneyim</label>
+            <input type="text"
+                   asp-for="ExperienceCount"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="ExperienceCount"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Eğitim İçeriği Sayısı</label>
+            <input type="text"
+                   asp-for="EducationContentCount"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="EducationContentCount"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Öğrenci Sayısı</label>
+            <input type="text"
+                   asp-for="StudentCount"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="StudentCount"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Mevcut Görsel</label>
+            <br />
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl"
+                     alt="Mevcut Profil Görseli"
+                     width="150"
+                     class="img-thumbnail mb-2" />
+            }
+        </div>
+
+        <div class="mb-3">
+            <label>Yeni Profil Görseli</label>
+            <input type="file"
+                   name="imageFile"
+                   class="form-control"
+                   accept=".jpg,.jpeg,.png,.webp" />
+
+            <span asp-validation-for="ImageUrl"
+                  class="text-danger"></span>
+
+            <small class="text-muted">
+                Yeni görsel seçmezseniz mevcut görsel korunur.
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Güncelle
+        </button>
+
+        <a href="/Admin/About/AboutList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+    </form>
+</div>

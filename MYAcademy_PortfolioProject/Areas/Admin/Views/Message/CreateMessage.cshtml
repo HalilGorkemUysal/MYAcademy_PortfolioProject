@@ -1,83 +1,72 @@
-﻿@model MYAcademy_PortfolioProject.Entities.Message
+﻿@model Message
+
 @{
     ViewData["Title"] = "CreateMessage";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<style>
-    .msg-card {
-        max-width: 760px;
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(0,0,0,.06);
-    }
+<div class="container">
+    <br />
+    <h4>Yeni Mesaj Ekle</h4>
+    <hr />
 
-        .msg-card .card-header {
-            background: transparent;
-            border-bottom: 1px solid #eee;
-            padding: 1.25rem 1.5rem;
-        }
+    <form method="post"
+          asp-area="Admin"
+          asp-controller="Message"
+          asp-action="CreateMessage">
 
-        .msg-card .card-body {
-            padding: 1.5rem;
-        }
+        @Html.AntiForgeryToken()
 
-        .msg-card .form-label {
-            font-weight: 500;
-            font-size: .9rem;
-            color: #555;
-        }
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
 
-        .msg-card .form-control {
-            border-radius: 8px;
-            padding: .6rem .85rem;
-        }
-
-            .msg-card .form-control:focus {
-                box-shadow: 0 0 0 .15rem rgba(13,110,253,.15);
-            }
-
-        .msg-card textarea {
-            resize: vertical;
-            min-height: 150px;
-        }
-</style>
-
-<div class="container-fluid py-3">
-    <div class="card msg-card">
-        <div class="card-header">
-            <h4 class="mb-0">Yeni Mesaj</h4>
-            <small class="text-muted">Mesaj bilgilerini doldurup gönderin.</small>
+        <div class="mb-3">
+            <label>Gönderen Ad Soyad</label>
+            <input type="text"
+                   asp-for="SenderName"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="SenderName"
+                  class="text-danger"></span>
         </div>
 
-        <div class="card-body">
-            <form method="post">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="SenderName" class="form-label">Ad Soyad</label>
-                        <input asp-for="SenderName" class="form-control" placeholder="Adınız Soyadınız" required />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="SenderEmail" class="form-label">E-posta</label>
-                        <input asp-for="SenderEmail" type="email" class="form-control" placeholder="ornek@mail.com" required />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Subject" class="form-label">Konu</label>
-                    <input asp-for="Subject" class="form-control" placeholder="Mesajın konusu" required />
-                </div>
-
-                <div class="mb-4">
-                    <label asp-for="MessageDetail" class="form-label">Mesaj</label>
-                    <textarea asp-for="MessageDetail" class="form-control" rows="6" placeholder="Mesajınızı yazın..." required></textarea>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2">
-                    <a asp-action="Index" class="btn btn-light">Vazgeç</a>
-                    <button type="submit" class="btn btn-primary px-4">Gönder</button>
-                </div>
-            </form>
+        <div class="mb-3">
+            <label>Gönderen E-posta</label>
+            <input type="email"
+                   asp-for="SenderEmail"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="SenderEmail"
+                  class="text-danger"></span>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label>Mesaj Konusu</label>
+            <input type="text"
+                   asp-for="Subject"
+                   class="form-control"
+                   required />
+            <span asp-validation-for="Subject"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Mesaj İçeriği</label>
+            <textarea asp-for="MessageDetail"
+                      class="form-control"
+                      rows="5"
+                      required></textarea>
+            <span asp-validation-for="MessageDetail"
+                  class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Mesajı Kaydet
+        </button>
+
+        <a href="/Admin/Message/MessageList"
+           class="btn btn-secondary">
+            Geri Dön
+        </a>
+    </form>
 </div>

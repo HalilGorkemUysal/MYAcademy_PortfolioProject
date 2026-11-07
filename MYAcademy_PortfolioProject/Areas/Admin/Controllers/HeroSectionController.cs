@@ -9,10 +9,13 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
     public class HeroSectionController : Controller
     {
         private readonly PortfolioContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public HeroSectionController(PortfolioContext context)
+
+        public HeroSectionController(PortfolioContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         public IActionResult HeroSectionList()
@@ -27,14 +30,46 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
             return View();
         }
 
+
         [HttpPost]
-        public IActionResult CreateHeroSection(HeroSection heroSection)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateHeroSection(
+            HeroSection heroSection, IFormFile? imageFile)
         {
+            if (imageFile == null || imageFile.Length == 0)
+                return BadRequest("Lütfen bir görsel seçiniz.");
+
+            var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+
+            if (!allowedExtensions.Contains(extension) ||
+                !imageFile.ContentType.StartsWith("image/") ||
+                imageFile.Length > 7 * 1024 * 1024)
+            {
+                return BadRequest("Geçersiz görsel formatı veya boyutu. En fazla 5 MB.");
+            }
+
+            var folderPath = Path.Combine(
+                _env.WebRootPath, "images", "herosections");
+
+            Directory.CreateDirectory(folderPath);
+
+            var fileName = Guid.NewGuid().ToString() + extension;
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.CreateNew))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            heroSection.MainImageUrl = "/images/herosections/" + fileName;
+
             _context.HeroSections.Add(heroSection);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("HeroSectionList");
         }
+
 
         public IActionResult DeleteHeroSection(int id)
         {
@@ -60,22 +95,55 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
             return View(value);
         }
 
+
         [HttpPost]
-        public IActionResult UpdateHeroSection(HeroSection heroSection)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateHeroSection(
+            HeroSection heroSection, IFormFile? imageFile)
         {
-            var value = _context.HeroSections.Find(heroSection.HeroSectionId);
+            var value = await _context.HeroSections
+                .FindAsync(heroSection.HeroSectionId);
 
             if (value == null)
                 return NotFound();
 
+            // Önce isteğe bağlı yeni görseli kontrol et
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+
+                if (!allowedExtensions.Contains(extension) ||
+                    !imageFile.ContentType.StartsWith("image/") ||
+                    imageFile.Length > 7 * 1024 * 1024)
+                {
+                    return BadRequest("Geçersiz görsel formatı veya boyutu. En fazla 5 MB.");
+                }
+
+                var folderPath = Path.Combine(
+                    _env.WebRootPath, "images", "herosections");
+
+                Directory.CreateDirectory(folderPath);
+
+                var fileName = Guid.NewGuid().ToString() + extension;
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.CreateNew))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                value.MainImageUrl = "/images/herosections/" + fileName;
+            }
+
             value.Greeting = heroSection.Greeting;
             value.Title = heroSection.Title;
             value.Description = heroSection.Description;
-            value.MainImageUrl = heroSection.MainImageUrl;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("HeroSectionList");
         }
+
     }
 }

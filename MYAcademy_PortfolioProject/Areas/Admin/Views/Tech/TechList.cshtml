@@ -1,0 +1,62 @@
+﻿@model List<Tech>
+
+@{
+    ViewData["Title"] = "TechList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container">
+    <br />
+    <h4>Teknoloji Listesi</h4>
+    <hr />
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Teknoloji Adı</th>
+                <th>Bağlı Olduğu Proje</th>
+                <th>Sil</th>
+                <th>Güncelle</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TechId</td>
+                    <td>@item.TechName</td>
+                    <td>@item.Project.ProjectTitle</td>
+
+                    <td>
+                        <form asp-area="Admin"
+                              asp-controller="Tech"
+                              asp-action="DeleteTech"
+                              asp-route-id="@item.TechId"
+                              method="post">
+
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Bu teknolojiyi silmek istediğinize emin misiniz?')">
+                                Sil
+                            </button>
+                        </form>
+                    </td>
+
+                    <td>
+                        <a class="btn btn-info"
+                           href="/Admin/Tech/UpdateTech/@item.TechId/">
+                            Güncelle
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a class="btn btn-success"
+       href="/Admin/Tech/CreateTech/">
+        Yeni Teknoloji Ekle
+    </a>
+</div>
