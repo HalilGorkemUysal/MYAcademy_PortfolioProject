@@ -7,7 +7,7 @@ namespace MYAcademy_PortfolioProject.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=HALILGORKEM;Database=PortfolioDayDb;Integrated Security=true;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=localhost;Database=PortfolioDayDb;Integrated Security=true;TrustServerCertificate=True;");
         }
 
         public DbSet<Experience> Experiences { get; set; }

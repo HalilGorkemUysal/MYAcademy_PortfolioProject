@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MYAcademy_PortfolioProject.Migrations
 {
     [DbContext(typeof(PortfolioContext))]
-    [Migration("20261107125601_AddAboutTable")]
-    partial class AddAboutTable
+    [Migration("20261119200646_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
